@@ -1,9 +1,20 @@
+/*jshint esversion: 6*/
+
 // TODO: Set up state zero
 /**
  * This is an invisible state that will have initializations that will only
  * happen ONCE when the app loads
  * adding event listeners and the like
  */
+
+// listeners
+var startButtonEle = document.querySelector("#start-button");
+console.log(startButtonEle);
+
+startButtonEle.addEventListener("click", (e) => {
+    console.log(e);
+});
+
 
 
 // TODO: Set up state one
