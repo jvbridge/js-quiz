@@ -4,5 +4,39 @@
     <link rel="stylesheet" href="./assets/css/reset.css">
     <link rel="stylesheet" href="./assets/css/styles.css">
     <script src="./assets/js/script.js"></script>
+    <title>JavaScript Quiz!</title>
 </head>
-<body></body>
+<body>
+    <!-- timer goes here -->
+    <div id="timer-wrapper">
+        <h2 id="timer-header">Time remaining:</h2>
+        <h3 id="time-signiture">00:00:00</h3>
+    </div>
+    <!-- header for the section -->
+    <h1 id="title">JavaScript Quiz!</h1>
+    <section id="main quiz">
+        <!-- start button. Will be invisible during game -->
+        <button id="start-button">Start!</button>
+        <!-- question area -->
+        <div id="question">A question says what?</div>
+        <!-- where all the answers and their buttons are held -->
+        <div id="answer-wrapper">
+            <div id="answer-wrapper-a"class="answer-wrapper">
+                <button class="answer-a answer-button">A</button>
+            </div>
+            <div id="answer-wrapper-b"class="answer-wrapper">
+                <button class="answer-b answer-button">B</button>
+            </div>
+            <div id="answer-wrapper-c"class="answer-wrapper">
+                <button class="answer-c answer-button">C</button>
+            </div>
+            <div id="answer-wrapper-d"class="answer-wrapper">
+                <button class="answer-d answer-button">D</button>
+            </div>
+        </div>
+    </section>
+    <footer>
+        Made by Jonathan Bridge
+        <a href="http://www.github.com/jvbridge">My Github!</a>
+    </footer>
+</body>
