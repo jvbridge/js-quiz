@@ -74,7 +74,15 @@ h2 {
     visibility: initial;
 }
 
-footer{
+.inner-answer-wrappper button, p{
+    display: inline;
+}
+
+.answer-button {
+    width: 30px;
+}
+
+footer {
     position: absolute;
     bottom: 0;
     left: 0;
