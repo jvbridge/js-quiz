@@ -6,16 +6,42 @@
  * happen ONCE when the app loads
  * adding event listeners and the like
  */
+function setstateZero(){
+    // listeners
 
-// listeners
-var startButtonEle = document.querySelector("#start-button");
-console.log(startButtonEle);
+    // Start button
+    var startButtonEle = document.querySelector("#start-button");
+    startButtonEle.addEventListener("click", (e) => {
+        // Log the event for debugging
+        console.log(e);
+        // set our state to state 2 (game state)
+        setStateTwo();
 
-startButtonEle.addEventListener("click", (e) => {
-    console.log(e);
-});
+    });
+
+    // A answer
+    var buttonAEle = document.querySelector("answer-a");
+    buttonAEle.addEventListener("click", () => {answer("A")});
+    // B answer
+    var buttonBEle = document.querySelector("answer-b");
+    buttonBEle.addEventListener("click", () => {answer("B")});
+    // C answer
+    var buttonCEle = document.querySelector("answer-c");
+    buttonAEle.addEventListener("click", () => {answer("A")});
+    // D answer
+    var buttonDEle = document.querySelector("answer-d");
+    buttonAEle.addEventListener("click", () => {answer("A")});
+}
 
 
+
+/**
+ * Called when the user clicks on a button to answer a question. 
+ * @param {String} answerLetter the letter answered with
+ */
+function answer(answerLetter){
+    console.log("user answered with: ", answerLetter);
+}
 
 // TODO: Set up state one
 /**
@@ -24,13 +50,14 @@ startButtonEle.addEventListener("click", (e) => {
  * It also notably will set up the elements to be back to this state from state 
  * three
  */
+function setStateOne(){}
 
 // TODO: Set up state two
 /**
  * This will switch all the elements from state one to state two
  * It will also set up the first question and start the timer
  */
-
+function setStateTwo(){}
 
 // TODO: Make a data format for questions
 
@@ -51,7 +78,12 @@ startButtonEle.addEventListener("click", (e) => {
  * It should calculate the current score given what has happened
  * It should calculate the place the person is in on the leaderboard
  */
+function setStateThree(){}
 
 // TODO: addScore() function
 
 // TODO: idea: set the title to be the time remaining
+
+
+// everything is set up lets run this puppy!
+setstateZero();
