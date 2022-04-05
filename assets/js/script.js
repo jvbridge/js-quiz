@@ -25,7 +25,33 @@ var questions = [
         d: "aggressive negotiations",
         // which answer is correct
         answer: "A"
+    },{
+        question: "What do you get if you add a number to a string with the plus \"+\" operator?",
+        a: "a number",
+        b: "an object",
+        c: "a string",
+        d: "an array",
+        answer: "C"
+    },{
+        question: "how many arguments can you pass into a function?",
+        a: "there is no limit",
+        b: "the limit is defined by the browser",
+        c: "255",
+        d: "not enough",
+        answer: "B"
     }
+
+
+    /*
+    Template
+    {
+        question: "",
+        a: "",
+        b: "",
+        c: "",
+        d: "",
+        answer: ""
+    }*/
 ];
 
 /*******************************************************************************
