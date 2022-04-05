@@ -87,8 +87,15 @@ var leaderBoardEles = [];
  */
 var submitScoreEle = document.querySelector("#submit-score");
 
+/**
+ * The element where you type said initials
+ */
 var initialsInputEle = document.querySelector("#initials");
 
+/**
+ * The button to click in order to play again
+ */
+var replayButton = document.querySelector("#replay")
 /*******************************************************************************
  * Global variables
  ******************************************************************************/
@@ -282,6 +289,10 @@ function init(){
         submitScore();
     });
 
+    // Event listener for replaying the game afterwards
+    replayButton.addEventListener("click", () => {
+        setState(1);
+    });
     // add all of the leaderboard eles to state 3 eles
     leaderBoardEles.forEach((value) => {
         stateThreeEles.push(value);
@@ -289,7 +300,9 @@ function init(){
 
     stateThreeEles.push(submitScoreEle);
     stateThreeEles.push(initialsInputEle);
+    stateThreeEles.push(replayButton);
     
+    stateThreeEles.push()
     // get any local storage
     retrieveLocalStorage();
 
@@ -321,9 +334,13 @@ function setState(stateNumber){
     console.log("setting state: " + stateNumber);
     switch (stateNumber){
         case 1:
+            // element visibilty
             setNotVisible(stateTwoEles);
             setNotVisible(stateThreeEles);
             setVisible(stateOneEles);
+            // reset variables
+            playerInitials = "";
+            playerScore = 0;
         break;
         case 2: 
             setNotVisible(stateOneEles);
@@ -435,6 +452,7 @@ function setQuestion(question){
  */
 function questionCorrect(){
     console.log("questionCorrect()");
+    playerScore += 20;
     if (currentQuestionIndex >= questions.length){
         endGame();
     } else {
