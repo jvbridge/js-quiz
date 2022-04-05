@@ -89,6 +89,26 @@ h2 {
     width: 30px;
 }
 
+#state-3 {
+
+}
+
+#state-3 input{
+
+}
+
+#state-3 ol{
+
+}
+
+#state-3 ol li{
+    border: 2px;
+    border-color: black;
+    border-style: solid;
+    margin:auto;
+
+}
+
 footer {
     position: absolute;
     bottom: 0;

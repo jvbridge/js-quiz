@@ -47,6 +47,17 @@ var answers = {
 var questionEle = document.querySelector("#question");
 var timerTextEle = document.querySelector("#time-signiture");
 
+/**
+ * A list of the elements for the leaderboard
+ */
+var leaderBoardEles = [];
+
+/**
+ * The element to submit your initials to 
+ */
+var submitScoreEle = document.querySelector("#submit-score");
+
+var initialsInputEle = document.querySelector("#initials");
 
 /*******************************************************************************
  * Global variables
@@ -121,20 +132,54 @@ var timerID;
  * All the elements that need to be made visible for us to be in state one
  * @type {Element[]}
  */
- var stateOneEles = [];
+var stateOneEles = [];
 
  /**
   * All the elements that need to be made visible for us to be in state two
   * @type {Element[]}
   */
- var stateTwoEles = [];
+var stateTwoEles = [];
  
  /**
   * All the elements that need to be made visible for us to be in state three
   * @type {Element[]}
   */
  var stateThreeEles = [];
- 
+
+/**
+ * The player's score at the end.
+ * @type {number}
+ */
+var playerScore = 0;
+
+/**
+ * The type of the 
+ * @type {string}
+ */
+var playerInitials = "";
+
+var leaderboard = [
+    {
+        initials: 'JVB',
+        score: 700,
+    },
+    {
+        initials: 'JVB',
+        score: 600,
+    },
+    {
+        initials: 'JVB',
+        score: 500,
+    },
+    {
+        initials: 'JVB',
+        score: 400,
+    },
+    {
+        initials: 'JVB',
+        score: 300,
+    },
+]
 /*******************************************************************************
  * Global Functions 
  ******************************************************************************/
@@ -191,6 +236,19 @@ function init(){
     stateTwoEles.push(document.querySelector("#answer-wrapper-d p"));
 
     // state 3
+
+    // push the leader board elements on 
+    leaderBoardEles.push(document.querySelector("#score-1"));
+    leaderBoardEles.push(document.querySelector("#score-2"));
+    leaderBoardEles.push(document.querySelector("#score-3"));
+    leaderBoardEles.push(document.querySelector("#score-4"));
+    leaderBoardEles.push(document.querySelector("#score-5"));
+
+    // event listener for submitting your score
+    submitScoreEle.addEventListener("click", ()=>{
+        playerInitials = convertInitials(initialsInputEle.value);
+        submitScore();
+    });
 
     // everything is done! Set the state to be state one
     setState(1);
@@ -279,6 +337,13 @@ function updateDOM(){
     // need to update the text for the timer with a conversion function
     timerText = convertTimeSignature(timeRemaining);
     timerTextEle.textContent = timerText;
+
+    // scores
+    for (var i = 0; i < leaderboard.length; i++){
+        var currEle = leaderBoardEles[i];
+        var currScore = leaderboard[i];
+        currEle.textContent = currScore.initials + "     " + currScore.score;
+    }   
 }
 /**
  * This will need to reset any data from a previous playthrough with the 
@@ -341,7 +406,8 @@ function questionIncorrect(){
     // lose 5 seconds on the timer
     timeRemaining -= 5;
 
-    // TODO score things
+    // also hit their score more for guessing wrong! MUAHAHAHAHAHA
+    playerScore -= 20;
 }
 
 
@@ -376,10 +442,13 @@ function setStateThree(){}
  */
 function startTimer(){
     console.log("starting timer");
+    // reset the time remaining to be appropriate
     timeRemaining = startingTime;
+    // propogate value to the DOM
     updateDOM();
+    // This is our countdown function
     timerID = setInterval(()=>{
-        // if we've won get us out of here!
+        // if we've run out of time get us out of here!
         if (timeRemaining < 1) {
             endGame();
             return;
@@ -404,10 +473,22 @@ function stopTimer(){
  * state 3
  */
 function endGame(){
-    // TODO set score
     console.log("endGame()");
     stopTimer();
+    setScore();
     setState(3);
+}
+
+/**
+ * Calculates the player's score and sends it to the DOM
+ */
+function setScore(){
+    // give the player a bonus for finishing faster
+    playerScore += timeRemaining * 5;
+    // debugging
+    console.log("player score: " + playerScore);
+    // send the info where it belongs
+    updateDOM();
 }
 
 /**
@@ -443,5 +524,65 @@ function convertTimeSignature(seconds){
     return (hoursStr + ":" + minutesStr + ":" + secondsStr);
 }
 
+/**
+ * converts a string to be a valid score
+ * @param {String} input 
+ * @returns {string} the first 3 characters of the string if applicable
+ */
+function convertInitials(input){
+    if (input.length > 3){
+        return input.substring(0,3);
+    }
+    return input;
+}
+
+/**
+ * Submits the player's current score to the scoreboard
+ */
+function submitScore(){
+    console.log("Submitting score: "+ playerScore + " with initials: " + playerInitials);
+    // if the score is too low to be on the leader board we are done
+    if (playerScore < leaderboard[leaderboard.length - 1]){
+        return;
+    }
+
+    // if we are bigger than all, we deserve to be at the top!
+    if (playerScore > leaderboard[0]){
+        leaderboard.pop();
+        leaderboard.unshift({
+            score: playerScore,
+            initials: playerInitials
+        });
+    }
+
+    // iterate through the leaderboard array
+    for (var i = 0; i < leaderboard.length; i++){
+        // if we are greater than the current index, we need to be one above it
+        // this also favors older scores to newer ones
+        if (playerScore > leaderboard[i].score){
+           
+            addScore(i);
+            // we are done! lets not do that again
+            break;
+       }
+    }
+    updateDOM();
+    // TODO: local storage
+}
+
+/**
+ * Adds the current score to the scores array at a given index
+ * @param {number} index the index we are inserting the score to
+ */
+function addScore(index){
+    console.log("adding the score into position: " + index);
+    // kick the smallest guy off
+    leaderboard.pop()
+    // add currentone in
+    leaderboard.splice(index, 0, {
+        initials: playerInitials,
+        score:playerScore,
+    });
+}
 // everything is set up lets run this puppy!
 init();
