@@ -276,6 +276,13 @@ function init(){
         submitScore();
     });
 
+    // add all of the leaderboard eles to state 3 eles
+    leaderBoardEles.forEach((value) => {
+        stateThreeEles.push(value);
+    })
+
+    stateThreeEles.push(submitScoreEle);
+    stateThreeEles.push(initialsInputEle);
     // everything is done! Set the state to be state one
     setState(1);
 }
@@ -551,15 +558,15 @@ function convertTimeSignature(seconds){
 }
 
 /**
- * converts a string to be a valid score
+ * Converts a string to be a valid score
  * @param {String} input 
  * @returns {string} the first 3 characters of the string if applicable
  */
 function convertInitials(input){
     if (input.length > 3){
-        return input.substring(0,3);
+        return input.substring(0,3).toUpperCase();
     }
-    return input;
+    return input.toUpperCase();
 }
 
 /**
