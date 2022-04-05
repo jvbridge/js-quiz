@@ -71,6 +71,16 @@ h2 {
     visibility: initial;
 }
 
+#answer-wrapper {
+    margin: auto;
+    text-align: center;
+}
+
+.inner-answer-wrappper {
+    text-align: left;
+}
+
+
 .inner-answer-wrappper button, p{
     display: inline;
 }

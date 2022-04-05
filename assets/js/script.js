@@ -6,6 +6,11 @@
  ******************************************************************************/
 
 /**
+ * The amount of time that we start with on the 
+ */
+var startingTime = 120;
+
+/**
  * An array of questions for the test. Each question is an object with the 
  * following properties: question, a, b, c, d, and answer
  */
@@ -22,6 +27,26 @@ var questions = [
         answer: "A"
     }
 ];
+
+/*******************************************************************************
+ * Element references
+ ******************************************************************************/
+
+/**
+ * An object that holds references to each answer element on the DOM, used for
+ * updating their text
+ */
+var answers = {
+    a: document.querySelector("#answer-wrapper-a p"),
+    b: document.querySelector("#answer-wrapper-b p"),
+    c: document.querySelector("#answer-wrapper-c p"),
+    d: document.querySelector("#answer-wrapper-d p")
+    
+}
+
+var questionEle = document.querySelector("#question");
+var timerTextEle = document.querySelector("#time-signiture");
+
 
 /*******************************************************************************
  * Global variables
@@ -45,13 +70,13 @@ var currentQuestionIndex = 0
  */
 var currentQuestionText = "The Wheel of Time turns, and Ages come and pass, leaving\
  memories that become legend. Legend fades to myth, and even myth is long \
- forgotten when the Age that gave it birth comes again";
+ forgotten when the Age that gave it birth comes again.";
 
  /**
   * The text to display for answer A 
   * @type {string}
   */
-var answerA = "Aies Sedai";
+var answerA = "Aes Sedai";
  /**
   * The text to display for answer B
   * @type {string}
@@ -68,6 +93,29 @@ var answerC = "The Two Rivers";
   */
 var answerD = "The three-fold land";
 
+/**
+ * The answer that is considered correct for the current question. Should only 
+ * be "A", "B", "C", or "D"
+ */
+var correctAnswer = "";
+
+/**
+ * The number of seconds remaining in the quiz
+ * @type {number} 
+ */
+var timeRemaining = 0;
+
+/**
+ * The text to display on the timer. Should only be set using 
+ * convertTimeSignature(). 
+ * @type {string}
+ */
+var timerText = "00:00:00";
+
+/**
+ * Placeholder for the timer's ID made by setInterval();
+ */
+var timerID;
 
 /**
  * All the elements that need to be made visible for us to be in state one
@@ -86,6 +134,7 @@ var answerD = "The three-fold land";
   * @type {Element[]}
   */
  var stateThreeEles = [];
+ 
 /*******************************************************************************
  * Global Functions 
  ******************************************************************************/
@@ -100,15 +149,13 @@ function init(){
     // Start button
     var startButtonEle = document.querySelector("#start-button");
     startButtonEle.addEventListener("click", (e) => {
-        // Log the event for debugging
-        console.log(e);
         // set our state to state 2 (game state) to start the game
         setState(2);
     });
 
     // push the element into the array
     stateOneEles.push(startButtonEle);
-    stateOneEles.push(document.querySelector("#title"));
+    // stateOneEles.push(document.querySelector("#title"));
 
     // state 2
 
@@ -151,12 +198,16 @@ function init(){
 
 /**
  * Called when the user clicks on a button to answer a question. Will resolve if
- * the user clicked the correct answer
+ * the user clicked the correct answer or not.
  * @param {String} answerLetter the letter answered with
  */
 function answer(answerLetter){
-    console.log("user answered with: ", answerLetter);
-
+    console.log("user answered with: " + answerLetter);
+    if (answerLetter == correctAnswer){
+        questionCorrect();
+        return;
+    }
+    questionIncorrect();
 }
 
 // TODO: Set up state one
@@ -169,24 +220,27 @@ function setState(stateNumber){
     console.log("setting state: " + stateNumber);
     switch (stateNumber){
         case 1:
-            setVisible(stateOneEles);
             setNotVisible(stateTwoEles);
             setNotVisible(stateThreeEles);
+            setVisible(stateOneEles);
         break;
         case 2: 
-            setVisible(stateTwoEles);
             setNotVisible(stateOneEles);
             setNotVisible(stateThreeEles);
+            setVisible(stateTwoEles);
+            currentQuestionIndex = 0;
+            setQuestion(questions[0]);
+            startTimer();
         break;
         case 3: 
-            setVisible(stateThreeEles);
             setNotVisible(stateOneEles);
             setNotVisible(stateTwoEles);
+            setVisible(stateThreeEles);
         break;
         default: throw "current state is not a defined number!";
     }
 
-
+    updateDOM();
 }
 
 /**
@@ -212,6 +266,21 @@ function setNotVisible(elements){
 
 
 /**
+ *  Updates all DOM values as is appropriate
+ */
+function updateDOM(){
+    
+    questionEle.textContent = currentQuestionText
+    answers.a.textContent = answerA;
+    answers.b.textContent = answerB;
+    answers.c.textContent = answerC;
+    answers.d.textContent = answerD;
+
+    // need to update the text for the timer with a conversion function
+    timerText = convertTimeSignature(timeRemaining);
+    timerTextEle.textContent = timerText;
+}
+/**
  * This will need to reset any data from a previous playthrough with the 
  * exception of the leaderboard
  * It also notably will set up the elements to be back to this state from state 
@@ -232,12 +301,61 @@ function setStateTwo(){}
 
 // TODO: setQuestion() function
 
+/**
+ * Sets the current question to be the one given as an argument, must be a 
+ * member of questions[]
+ * @param {object} question 
+ */
+function setQuestion(question){
+    // sets the varibles from the question
+    answerA = question.a;
+    answerB = question.b;
+    answerC = question.c;
+    answerD = question.d;
+    currentQuestionText = question.question;
+    correctAnswer = question.answer;
+
+    // pushing them to the DOM
+    updateDOM();
+}
+
 // TODO: questionCorrect() function
 
-// TODO: questionIncorrect() function
+/**
+ * Called if the user answers the question correctly
+ */
+function questionCorrect(){
+    console.log("questionCorrect()");
+    if (currentQuestionIndex >= questions.length){
+        endGame();
+    } else {
+        nextQuestion();
+    }
+}
 
-// TODO: nextQuestion() function
+/**
+ * Called if the user answers the question incorrectly
+ */
+function questionIncorrect(){
+    console.log("questionIncorrect()")
+    // lose 5 seconds on the timer
+    timeRemaining -= 5;
 
+    // TODO score things
+}
+
+
+/**
+ * Updates us to the next question. If we are out of questions, end the game
+ */
+function nextQuestion(){
+    currentQuestionIndex++;
+    if (!(currentQuestionIndex < questions.length)){
+        endGame();
+        return;
+    }
+    setQuestion(questions[currentQuestionIndex]);
+}
 
 
 // TODO: Set up state three
@@ -253,6 +371,77 @@ function setStateThree(){}
 
 // TODO: idea: set the title to be the time remaining
 
+/**
+ * Starts the timer when we enter state2
+ */
+function startTimer(){
+    console.log("starting timer");
+    timeRemaining = startingTime;
+    updateDOM();
+    timerID = setInterval(()=>{
+        // if we've won get us out of here!
+        if (timeRemaining < 1) {
+            endGame();
+            return;
+        }
+
+        // otherwise decrement the timer
+        timeRemaining--;
+        // and update the DOM
+        updateDOM();
+    }, 1000);
+}
+
+/**
+ * Stops the timer and takes any other appropriate actions;
+ */
+function stopTimer(){   
+    clearInterval(timerID);
+}   
+
+/**
+ * Ends the game and calculates the player's score. Will then send them to
+ * state 3
+ */
+function endGame(){
+    // TODO set score
+    console.log("endGame()");
+    stopTimer();
+    setState(3);
+}
+
+/**
+ * Returns a string in the fomrat "hours:minutes:seconds"
+ * @param {number} seconds how many seconds to convert
+ */
+function convertTimeSignature(seconds){
+    var hours = Math.floor(seconds/3600);
+    var minutes = Math.floor((seconds - (hours * 3600))/60);
+    var endingSeconds = seconds - ( (hours * 3600) + (minutes * 60) );
+
+    var hoursStr;
+    var minutesStr;
+    var secondsStr;
+
+    if (hours < 10){
+        hoursStr = "0" + hours;
+    } else {
+        hoursStr = "" + hours;
+    }
+
+    if (minutes < 10){
+        minutesStr = "0" + minutes;
+    } else {
+        minutesStr = "" + minutes;
+    }
+    if (endingSeconds < 10){
+        secondsStr = "0" + endingSeconds;
+    } else {
+        secondsStr = "" + endingSeconds;
+    }
+
+    return (hoursStr + ":" + minutesStr + ":" + secondsStr);
+}
 
 // everything is set up lets run this puppy!
 init();
