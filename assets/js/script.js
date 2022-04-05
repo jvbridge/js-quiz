@@ -95,7 +95,9 @@ var initialsInputEle = document.querySelector("#initials");
 /**
  * The button to click in order to play again
  */
-var replayButton = document.querySelector("#replay")
+var replayButton = document.querySelector("#replay");
+
+var scoreEle = document.querySelector("#player-score");
 /*******************************************************************************
  * Global variables
  ******************************************************************************/
@@ -275,7 +277,7 @@ function init(){
     stateTwoEles.push(document.querySelector("#answer-wrapper-d p"));
 
     // state 3
-
+    
     // push the leader board elements on 
     leaderBoardEles.push(document.querySelector("#score-1"));
     leaderBoardEles.push(document.querySelector("#score-2"));
@@ -298,6 +300,7 @@ function init(){
         stateThreeEles.push(value);
     })
 
+    stateThreeEles.push(document.querySelector("#score-card"));
     stateThreeEles.push(submitScoreEle);
     stateThreeEles.push(initialsInputEle);
     stateThreeEles.push(replayButton);
@@ -399,7 +402,10 @@ function updateDOM(){
     timerText = convertTimeSignature(timeRemaining);
     timerTextEle.textContent = timerText;
 
-    // scores
+    // the player's score after the game
+    scoreEle.textContent = playerScore;
+
+    // leaderboard
     for (var i = 0; i < leaderboard.length; i++){
         var currEle = leaderBoardEles[i];
         var currScore = leaderboard[i];
