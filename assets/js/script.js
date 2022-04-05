@@ -4,6 +4,10 @@
 /*******************************************************************************
  * Global constants
  ******************************************************************************/
+/**
+ * The key in local storage where we store the statistics
+ */
+var localStorageKey = "quizStats";
 
 /**
  * The amount of time that we start with on the 
@@ -215,6 +219,8 @@ var leaderboard = [
  * all needed references and puts on all relevant listeners.
  */
 function init(){
+    
+    
     // state 1
 
     // Start button
@@ -283,6 +289,10 @@ function init(){
 
     stateThreeEles.push(submitScoreEle);
     stateThreeEles.push(initialsInputEle);
+    
+    // get any local storage
+    retrieveLocalStorage();
+
     // everything is done! Set the state to be state one
     setState(1);
 }
@@ -361,7 +371,8 @@ function setNotVisible(elements){
  */
 function updateDOM(){
     
-    questionEle.textContent = currentQuestionText
+    console.log("updating DOM");
+    questionEle.textContent = currentQuestionText;
     answers.a.textContent = answerA;
     answers.b.textContent = answerB;
     answers.c.textContent = answerC;
@@ -599,8 +610,10 @@ function submitScore(){
             break;
        }
     }
+    // send the new information into local storage
+    updateLocalStorage();
+    // populate the DOM with what we have set.
     updateDOM();
-    // TODO: local storage
 }
 
 /**
@@ -617,5 +630,54 @@ function addScore(index){
         score:playerScore,
     });
 }
+
+/**
+ * Retrieves the local storage and populates the values to the leader board
+ */
+function retrieveLocalStorage(){
+    console.log("retrieveing local storage");
+    var statsString = localStorage.getItem(localStorageKey);
+    // if there is no local storage string that means we need to make one
+    if (!statsString){
+        console.log("no local storage found. Making some storage for us")
+        // this just overwrites any values we have with the default
+        leaderboard =  [
+            {
+                initials: 'JVB',
+                score: 700,
+            },
+            {
+                initials: 'JVB',
+                score: 600,
+            },
+            {
+                initials: 'JVB',
+                score: 500,
+            },
+            {
+                initials: 'JVB',
+                score: 400,
+            },
+            {
+                initials: 'JVB',
+                score: 300,
+            },
+        ]
+        updateDOM();
+        // then we write it to the storage
+        updateLocalStorage();
+        return;
+    }
+    // if we do have stats we should populate them
+    leaderboard = JSON.parse(statsString);
+    updateDOM();
+
+}
+
+function updateLocalStorage(){
+    var statsString = JSON.stringify(leaderboard);
+    localStorage.setItem(localStorageKey, statsString);
+}
+
 // everything is set up lets run this puppy!
 init();
