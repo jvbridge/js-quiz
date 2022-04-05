@@ -1,5 +1,5 @@
 # js-quiz
-A small quiz app about javascript
+A small quiz app about javascript. It is currently hosted at https://jvbridge.github.io/js-quiz/
 
 
 ## Description
