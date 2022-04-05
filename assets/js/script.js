@@ -43,8 +43,28 @@ var questions = [
         c: "255",
         d: "not enough",
         answer: "B"
+    },{
+        question: "What array method can you use to access each element?",
+        a: "forWhile()",
+        b: "doEach()",
+        c: "ifOr()",
+        d: "forEach()",
+        answer: "D"
+    },{
+        question: "What company created Javascript?",
+        a: "Sun Microsystems",
+        b: "Mozilla",
+        c: "Microsoft",
+        d: "Netscape",
+        answer: "D"
+    },{
+        question: "What company owns the Javscript langauge Trademark?",
+        a: "Oracle Corporation",
+        b: "Sun Microsystems",
+        c: "Microsoft",
+        d: "Google (Alphabet)",
+        answer: "A"
     }
-
 
     /*
     Template
